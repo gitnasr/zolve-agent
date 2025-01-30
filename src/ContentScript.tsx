@@ -1,88 +1,59 @@
+// import { Cloudflare } from "./ai-agents/Cloudflare";
+
+import { ChromeMessage, QuestionWithOptions } from "./types";
+
+import { Actions } from "./chrome/actions";
+import { ChromeEngine } from "./chrome";
+import { Helper } from "./utils";
+import { MicrosoftFormsScrapper } from "./engines/microsoft/forms";
 import { clipboard } from "@extend-chrome/clipboard";
 
-enum Selectors {
-  QuestionItem = "div[data-automation-id='questionItem']",
-  QuestionList = "#question-list",
-  QuestionHeaderParent = "span[data-automation-id='questionTitle']",
-  QuestionHeader = "span[role='heading']",
-  QuestionContent = "span[class='text-format-content ']",
-  QuestionNumber = "span[data-automation-id='questionOrdinal']",
-  RadioOption = "div[role='radiogroup']",
-  CheckboxOption = "div[role='group']",
-}
+class ContentScript {
+  constructor() {
+    console.log("ContentScript constructor");
+    this.registerListeners();
+  }
 
-interface IQuestions {
-  question: string;
-  options: Array<string>;
-  isMultipleChoice: boolean;
-  number: number;
-}
-type QuestionWithOptions = IQuestions[];
+  private registerListeners() {
+    chrome.runtime.onMessage.addListener(async (msg: ChromeMessage, _sender, _sendResponse) => {
+      const { command, data } = msg;
+      console.log("🚀 ~ ContentScript ~ command, data:", command, data)
 
-chrome.runtime.onMessage.addListener(function (msg, sender, sendResponse) {
-  if (msg.command === 'start') {
+      if (command === Actions.start && data.service == "forms.office.com") {
+        const MSFS = new MicrosoftFormsScrapper();
+        const ArrayOf5Formatted = await MSFS.Scrape();
+        console.log("🚀 ~ ContentScript ~ Questions", ArrayOf5Formatted)
+        if (ArrayOf5Formatted) {
 
-    const QuestionWithOptions: QuestionWithOptions = []
+          this.SendChunksToAgent(ArrayOf5Formatted, data.agent, data.service)
+        }
 
-    const QuestionList = document.querySelector(Selectors.QuestionList);
-    if (QuestionList) {
-      const QuestionItems = QuestionList.querySelectorAll(Selectors.QuestionItem);
-      const QuestionItemsAsArray = Array.from(QuestionItems);
-      for (let index = 0; index < QuestionItemsAsArray.length; index++) {
-        const element = QuestionItemsAsArray[index];
-
-
-        element.querySelectorAll(Selectors.QuestionHeaderParent).forEach((header) => {
-          const qNumber = header.querySelector(Selectors.QuestionNumber)?.textContent?.replace(".", "");
-          const title = header.querySelector(Selectors.QuestionContent)?.textContent;
-          // try to get if it's a multiple choice question or radio
-          const radioOption = element.querySelector(Selectors.RadioOption);
-          const checkboxOption = element.querySelector(Selectors.CheckboxOption);
-
-          if (radioOption) {
-            const options = radioOption.querySelectorAll("label")
-            const optionsArray = Array.from(options).map((option) => option.textContent);
-            const IsReady = optionsArray.length > 0 && title && qNumber
-
-            if (!IsReady) return;
-            QuestionWithOptions.push({
-              question: title,
-              options: optionsArray as string[],
-              isMultipleChoice: false,
-              number: parseInt(qNumber)
-            });
-
-          }
-
-          if (checkboxOption) {
-            const options = checkboxOption.querySelectorAll("label")
-            const optionsArray = Array.from(options).map((option) => option.textContent);
-            const IsReady = optionsArray.length > 0 && title && qNumber
-
-            if (!IsReady) return;
-            QuestionWithOptions.push({
-              question: title,
-              options: optionsArray as string[],
-              isMultipleChoice: true,
-              number: parseInt(qNumber)
-            });
-
-          }
-
-
-
-
-        })
+      }
+      if (command === Actions.setClipboard) {
+        for (const line of data) {
+          await clipboard.writeText(line);
+          await ChromeEngine.Sleep(2000);
+        }
       }
 
-      console.log(QuestionWithOptions);
-
-
-
-    } else {
-      clipboard.writeText("I can't find the question list you're on your own.");
+    });
+  }
+  private SendChunksToAgent(ArrayOfArrayOfQuestions: string[][], agent: keyof typeof Actions, service: string) {
+    for (let index = 0; index < ArrayOfArrayOfQuestions.length; index++) {
+      const element = ArrayOfArrayOfQuestions[index];
+      const Message = element.join("\n")
+      chrome.runtime.sendMessage({
+        command: Actions[agent],
+        data: {
+          service,
+          message: Message,
+          agent
+        }
+      })
     }
   }
 
-});
 
+}
+
+new ContentScript();
