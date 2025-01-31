@@ -1,3 +1,5 @@
+import "../public/index.css";
+
 import { Actions } from "./chrome/actions";
 import { ChromeEngine } from "./chrome";
 import { ChromeMessage } from "./types";
@@ -6,6 +8,7 @@ import { MicrosoftFormsScrapper } from "./engines/microsoft/forms";
 class ContentScript {
   constructor() {
     this.registerListeners();
+    const textBox =  this.renderTextbox();
   }
 
   private registerListeners() {
@@ -24,12 +27,12 @@ class ContentScript {
               MSFS.formId
             );
           } else {
-            console.log("🚀 ~ ContentScript ~ No questions found");
+            ChromeEngine.sendNotification("Error While Scraping", "No Data Sent back from the scraper");
           }
         }
         if (command === Actions.setResponseIntoTextbox) {
           const textBox =  this.renderTextbox();
-          textBox.innerHTML += data;
+          textBox.innerHTML += "\n" +data;
         }
       }
     );
@@ -55,19 +58,20 @@ class ContentScript {
     }
   }
 
-  private  renderTextbox() {
-    const textbox = document.querySelector(".es-output");
-    if (!textbox) {
-      // Create one
+  private renderTextbox() {
+    const parent = document.querySelector(".es-output-parent");
+    
+    if (!parent) {
+      
       const textbox = document.createElement("textarea");
-      textbox.classList.add("es-output");
-      textbox.style.position = "fixed";
-      textbox.style.bottom = "0";
-      textbox.style.right = "0";
-      textbox.style.width = "50%";
-      document.body.appendChild(textbox);
+      textbox.classList.add("es-output-text-area");
+      const parent = document.createElement("div");
+      parent.classList.add("es-output-parent");
+      parent.appendChild(textbox);
+      document.body.appendChild(parent);
       return textbox;
     }
+    const textbox = parent.querySelector(".es-output-text-area")!;
 
     return textbox;
 
