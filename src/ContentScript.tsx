@@ -1,16 +1,12 @@
-// import { Cloudflare } from "./ai-agents/Cloudflare";
-
 import { ChromeMessage, QuestionWithOptions } from "./types";
 
 import { Actions } from "./chrome/actions";
 import { ChromeEngine } from "./chrome";
-import { Helper } from "./utils";
 import { MicrosoftFormsScrapper } from "./engines/microsoft/forms";
 import { clipboard } from "@extend-chrome/clipboard";
 
 class ContentScript {
   constructor() {
-    console.log("ContentScript constructor");
     this.registerListeners();
   }
 
@@ -22,10 +18,12 @@ class ContentScript {
       if (command === Actions.start && data.service == "forms.office.com") {
         const MSFS = new MicrosoftFormsScrapper();
         const ArrayOf5Formatted = await MSFS.Scrape();
-        console.log("🚀 ~ ContentScript ~ Questions", ArrayOf5Formatted)
+        console.log("🚀 ~ ContentScript ~ formId", MSFS.formId)
         if (ArrayOf5Formatted) {
 
-          this.SendChunksToAgent(ArrayOf5Formatted, data.agent, data.service)
+          this.SendChunksToAgent(ArrayOf5Formatted, data.agent, data.service, MSFS.formId)
+        }else{ 
+          console.log("🚀 ~ ContentScript ~ No questions found")
         }
 
       }
@@ -38,7 +36,7 @@ class ContentScript {
 
     });
   }
-  private SendChunksToAgent(ArrayOfArrayOfQuestions: string[][], agent: keyof typeof Actions, service: string) {
+  private SendChunksToAgent(ArrayOfArrayOfQuestions: string[][], agent: keyof typeof Actions, service: string, formId: string) {
     for (let index = 0; index < ArrayOfArrayOfQuestions.length; index++) {
       const element = ArrayOfArrayOfQuestions[index];
       const Message = element.join("\n")
@@ -47,7 +45,8 @@ class ContentScript {
         data: {
           service,
           message: Message,
-          agent
+          agent,
+          formId
         }
       })
     }

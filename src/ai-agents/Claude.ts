@@ -4,23 +4,30 @@ import { Message } from "../types";
 import { SystemPrompt } from "./Prompt";
 import { config } from "../../env.prod.json";
 
+interface ClaudeLocalStorage {
+  conversationId: string;
+  formId: string;
+}
 export class ClaudeReversed extends Agent {
   private static instance: ClaudeReversed;
   protected readonly host: string = config.claude.host;
-  private readonly conversationIdKey: string = "ClaudeReversedConversationId";
+  private readonly conversationIdKey: string =
+    "ClaudeReversedConversationIdWithForm";
+  private formId: string;
   public conversationId: string | null = null;
 
-  static async getInstance() {
+  static async getInstance(formId: string) {
     if (this.instance) {
       return this.instance;
     }
 
-    this.instance = new ClaudeReversed();
+    this.instance = new ClaudeReversed(formId);
     await this.instance.PrepareConversation();
     return this.instance;
   }
-  private constructor() {
+  private constructor(formId: string) {
     super();
+    this.formId = formId;
   }
 
   public async Start(message: Message) {
@@ -64,18 +71,41 @@ export class ClaudeReversed extends Agent {
   }
 
   private async PrepareConversation() {
-    console.log("PrepareConversation");
+    //Every form should be connected to a conversation
 
-    let conversationId = await ChromeEngine.getLocalStorage(
-      this.conversationIdKey
-    );
-    if (conversationId) {
-      this.conversationId = conversationId;
+    const conversationIdWithForm =
+      await ChromeEngine.getLocalStorage<ClaudeLocalStorage>(
+        this.conversationIdKey
+      );
+      console.log("🚀 ~ ClaudeReversed ~ PrepareConversation ~ conversationIdWithForm:", conversationIdWithForm)
+
+    if (conversationIdWithForm) {
+      console.table(conversationIdWithForm);
+
+      this.conversationId = conversationIdWithForm.conversationId;
+
+      let formId = conversationIdWithForm.formId;
+
+      if (formId !== this.formId) {
+        this.conversationId = await this.StartConversation();
+        await ChromeEngine.setLocalStorage<ClaudeLocalStorage>(
+          this.conversationIdKey,
+          {
+            conversationId: this.conversationId,
+            formId: this.formId,
+          }
+        );
+      }
     } else {
+      console.log("No conversation found, starting a new one");
+      
       this.conversationId = await this.StartConversation();
-      await ChromeEngine.setLocalStorage(
+      await ChromeEngine.setLocalStorage<ClaudeLocalStorage>(
         this.conversationIdKey,
-        this.conversationId
+        {
+          conversationId: this.conversationId,
+          formId: this.formId,
+        }
       );
     }
   }

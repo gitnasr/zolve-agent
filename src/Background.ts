@@ -40,7 +40,7 @@ class ChromeBackgroundEngine {
        * Debugging purposes Will be removed in the final version
        */
       if (info.menuItemId === "debug") {
-        ChromeEngine.getLocalStorage("ClaudeReversedConversationId").then(
+        ChromeEngine.getLocalStorage("ClaudeReversedConversationIdWithForm").then(
           (res) => {
             console.log(res);
           }
@@ -73,10 +73,9 @@ class ChromeBackgroundEngine {
         
         let DataToBeSetIntoClipboard: string[] = [];
         if (command === Actions.claude) {
-          const Agent = await  ClaudeReversed.getInstance()
+          const Agent = await  ClaudeReversed.getInstance(data.formId)
 
         
-          
           
           DataToBeSetIntoClipboard = await Agent.Start(data.message);
 
@@ -93,7 +92,6 @@ class ChromeBackgroundEngine {
               data: DataToBeSetIntoClipboard,
             });
           }
-          console.log("🚀 ~ ChromeBackgroundEngine ~ DataToBeSetIntoClipboard", DataToBeSetIntoClipboard);
           
       }
     );
