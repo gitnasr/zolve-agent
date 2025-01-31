@@ -4,6 +4,7 @@ import { Prompt } from "./Prompt";
 
 export abstract class Agent {
   protected abstract readonly host: string;
+  protected abstract ConfigId: string;
   protected readonly headers = {
     "Content-Type": "application/json",
     Authorization: "",
@@ -35,4 +36,5 @@ export abstract class Agent {
     const config = await ChromeEngine.getLocalStorage<T>(key);
     return config;
   }
+  protected abstract prepareHost(): Promise<void>;
 }

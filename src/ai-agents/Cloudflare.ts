@@ -5,19 +5,23 @@ import { ChromeEngine } from "../chrome";
 import { config } from "../../env.prod.json";
 
 // load json file of config (Only for current progress, it will be replaced with chrome storage when implanting the option page)
-
+interface CloudflareConfig {
+  apiEndpoint: string;
+  accountId: string;
+  modelName: string;
+  apiKey: string;
+}
 export class Cloudflare extends Agent {
-  host: string;
-  private readonly API_BASE = config.cloudflare.API_BASE;
-  private readonly ACCOUNT_ID = config.cloudflare.ACCOUNT_ID;
-  private readonly MODEL_NAME = config.cloudflare.MODEL_NAME;
+  protected host: string = "";
+
+  protected readonly ConfigId: string = "CloudflareConfig";
+
   constructor() {
     super();
-    this.headers.Authorization = `Bearer ${config.cloudflare.API_KEY}`;
-    this.host = `${this.API_BASE}/client/v4/accounts/${this.ACCOUNT_ID}/ai/run/${this.MODEL_NAME}`;
   }
 
   public async Start(message: Message): Promise<string[]> {
+    await this.prepareHost();
     const CloudflareResponse = await this.SendMessage<CloudflareResponse>(
       message
     );
@@ -29,5 +33,14 @@ export class Cloudflare extends Agent {
       .map((str) => str.trim());
 
     return SplittedOutput;
+  }
+
+  protected async prepareHost(): Promise<void> {
+    const Config = await this.getConfigByKey<CloudflareConfig>(this.ConfigId);
+    if (!Config) {
+      throw new Error("Cloudflare Config not found");
+    }
+    this.host = `${Config.apiEndpoint}/client/v4/accounts/${Config.accountId}/ai/run/${Config.modelName}`;
+    this.headers.Authorization = `Bearer ${Config.apiKey}`;
   }
 }

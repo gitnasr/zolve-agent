@@ -14,7 +14,7 @@ export class ClaudeReversed extends Agent {
   protected host: string = "";
   private readonly conversationIdKey: string =
     "ClaudeReversedConversationIdWithForm";
-  private readonly ClaudeConfigId: string = "ClaudeConfig";
+  protected readonly ConfigId: string = "ClaudeConfig";
   private formId: string;
   public conversationId: string | null = null;
 
@@ -32,8 +32,8 @@ export class ClaudeReversed extends Agent {
     super();
     this.formId = formId;
   }
-  private async prepareHost() {
-    const Config = await this.getConfigByKey<ClaudeConfig>(this.ClaudeConfigId);
+  protected async prepareHost() {
+    const Config = await this.getConfigByKey<ClaudeConfig>(this.ConfigId);
     if (!Config) {
       throw new Error("Claude Config not found");
     }
