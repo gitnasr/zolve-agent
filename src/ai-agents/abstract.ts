@@ -2,11 +2,11 @@ import { Message } from "../types";
 import { Prompt } from "./Prompt";
 
 export abstract class Agent {
-  protected abstract  readonly host: string;
+  protected abstract readonly host: string;
   protected readonly headers = {
     "Content-Type": "application/json",
     Authorization: "",
-    Cookies:""
+    Cookies: "",
   };
   abstract Start(message: Message): Promise<string[]>;
   async SendMessage<T>(
@@ -27,10 +27,7 @@ export abstract class Agent {
       credentials: "include",
     });
 
-    
-
     const json = await Response.json();
     return json;
   }
- 
 }

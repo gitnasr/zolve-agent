@@ -18,7 +18,6 @@ export class ClaudeReversed extends Agent {
       this.instance = new ClaudeReversed(formId);
       const cookies = await ChromeEngine.getCookiesByDomain("claude.ai");
       this.instance.headers.Cookies = cookies;
-      console.log("🚀 ~ ClaudeReversed ~ getInstance ~ this.instance.headers:", this.instance.headers)
       await this.instance.PrepareConversation();
     }
 
@@ -75,13 +74,13 @@ export class ClaudeReversed extends Agent {
       await ChromeEngine.getLocalStorage<ClaudeLocalStorage>(
         this.conversationIdKey
       );
-  
+
     if (conversationIdWithForm) {
       console.table(conversationIdWithForm);
       this.conversationId = conversationIdWithForm.conversationId;
-  
+
       let formId = conversationIdWithForm.formId;
-  
+
       if (formId !== this.formId) {
         this.conversationId = await this.StartConversation();
         await ChromeEngine.setLocalStorage<ClaudeLocalStorage>(
@@ -93,8 +92,7 @@ export class ClaudeReversed extends Agent {
         );
       }
     } else {
-      console.log("No conversation found, starting a new one");
-  
+
       this.conversationId = await this.StartConversation();
       await ChromeEngine.setLocalStorage<ClaudeLocalStorage>(
         this.conversationIdKey,
@@ -104,13 +102,9 @@ export class ClaudeReversed extends Agent {
         }
       );
     }
-  
-    // هنا لو لسه ما حصلتش على الـ conversationId، ممكن تضيف انتظار (async/await)
+
     if (!this.conversationId) {
       throw new Error("Failed to initialize conversation ID");
     }
   }
-  
-
-
 }

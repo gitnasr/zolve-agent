@@ -7,7 +7,6 @@
     "watch": "webpack --config webpack/dev.js --watch",
     "build": "webpack --config webpack/prod.js",
     "clean": "rimraf dist",
-    "test": "npx jest",
     "style": "prettier --write \"src/**/*.{ts,tsx}\""
   },
   "author": "",
@@ -17,7 +16,6 @@
     "react-dom": "^18.2.0"
   },
   "devDependencies": {
-    "@extend-chrome/clipboard": "^2.0.0",
     "@types/chrome": "0.0.158",
     "@types/jest": "^29.5.0",
     "@types/react": "^18.0.29",

@@ -40,18 +40,18 @@ class ChromeBackgroundEngine {
        * Debugging purposes Will be removed in the final version
        */
       if (info.menuItemId === "debug") {
-        ChromeEngine.getLocalStorage("ClaudeReversedConversationIdWithForm").then(
-          (res) => {
-            console.log(res);
-          }
-        );
+        ChromeEngine.getLocalStorage(
+          "ClaudeReversedConversationIdWithForm"
+        ).then((res) => {
+          console.log(res);
+        });
         return;
       }
       if (info.menuItemId === "storage") {
         console.log("clearing storage");
-        
+
         chrome.storage.sync.clear();
-        
+
         return;
       }
       if (tab && tab.id) {
@@ -70,50 +70,49 @@ class ChromeBackgroundEngine {
     chrome.runtime.onMessage.addListener(
       async (message: ChromeMessage, _sender, _response) => {
         const { command, data } = message;
-        
+
         let DataToBeSetIntoClipboard: string[] = [];
         if (command === Actions.claude) {
-          const Agent = await  ClaudeReversed.getInstance(data.formId)
+          const Agent = await ClaudeReversed.getInstance(data.formId);
           // Retry logic to ensure the conversationId is fetched properly before proceeding
           // The code will try to retrieve the conversationId up to a maximum number of retries (maxRetries).
           // If the conversationId is not available, it will retry after a delay (retryDelay) until the maxRetries is reached.
           // If the conversationId is not fetched after the maximum retries, the function will log a failure message and stop.
           // The delay between retries helps avoid flooding the server with requests in a short time.
-          const maxRetries = 5;  
-          const retryDelay = 2000; 
+          const maxRetries = 5;
+          const retryDelay = 2000;
           let retries = 0;
           let conversationIdReady = false;
-        
+
           while (retries < maxRetries && !conversationIdReady) {
             if (Agent.conversationId) {
-              conversationIdReady = true;  
+              conversationIdReady = true;
             } else {
               retries++;
-              console.log(`Retry ${retries}/${maxRetries}... waiting for conversationId`);
-              await ChromeEngine.Sleep(retryDelay);  
+              console.log(
+                `Retry ${retries}/${maxRetries}... waiting for conversationId`
+              );
+              await ChromeEngine.Sleep(retryDelay);
             }
           }
-  
+
           if (!conversationIdReady) {
             console.log("Failed to get conversationId after retries");
             return;
           }
           DataToBeSetIntoClipboard = await Agent.Start(data.message);
-
         }
         if (command === Actions.dsr1) {
           const Agent = new Cloudflare();
           DataToBeSetIntoClipboard = await Agent.Start(data.message);
-          
         }
         const tabId = await ChromeEngine.getTabIdByURL(data.service);
-          if (tabId) {
-            this.sendMessageToTab(tabId, {
-              command: Actions.setClipboard,
-              data: DataToBeSetIntoClipboard,
-            });
-          }
-          
+        if (tabId) {
+          this.sendMessageToTab(tabId, {
+            command: Actions.setClipboard,
+            data: DataToBeSetIntoClipboard,
+          });
+        }
       }
     );
   }
@@ -121,7 +120,6 @@ class ChromeBackgroundEngine {
   private sendMessageToTab(tabId: number, message: ChromeMessage) {
     chrome.tabs.sendMessage(tabId, message);
   }
-
 }
 
 new ChromeBackgroundEngine();
