@@ -1,7 +1,7 @@
 {
-  "name": "chrome-extension-typescript-starter",
+  "name": "exam-solver-extension",
   "version": "1.0.0",
-  "description": "chrome-extension-typescript-starter",
+  "description": "Exam Solver Extension - Uses AI to solve online exams",
   "main": "index.js",
   "scripts": {
     "watch": "webpack --config webpack/dev.js --watch",
@@ -9,7 +9,7 @@
     "clean": "rimraf dist",
     "style": "prettier --write \"src/**/*.{ts,tsx}\""
   },
-  "author": "",
+  "author": "gitnasr",
   "license": "MIT",
   "dependencies": {
     "react": "^18.2.0",

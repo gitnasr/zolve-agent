@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
 
-  "name": "Chrome Extension TypeScript Starter",
-  "description": "Chrome Extension, TypeScript, Visual Studio Code",
+  "name": "Exam Solver Extension",
+  "description": "A Browser Extension that uses AI to solve online exams",
   "version": "1.0",
 
   "content_scripts": [
