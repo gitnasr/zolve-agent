@@ -39,3 +39,11 @@ export interface CloudflareResponse {
     number: number;
   }
   export type QuestionWithOptions = IQuestions[];
+
+  export interface ClaudeLocalStorage {
+    conversationId: string;
+    formId: string;
+  }
+  export interface ClaudeServerResponse {
+    response: string;
+  }

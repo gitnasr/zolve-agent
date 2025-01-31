@@ -6,6 +6,7 @@ export abstract class Agent {
   protected readonly headers = {
     "Content-Type": "application/json",
     Authorization: "",
+    Cookies:""
   };
   abstract Start(message: Message): Promise<string[]>;
   async SendMessage<T>(
@@ -23,6 +24,7 @@ export abstract class Agent {
       body: JSON.stringify({ ...payload, ...extendedBody }),
       headers: this.headers,
       method: "POST",
+      credentials: "include",
     });
 
     

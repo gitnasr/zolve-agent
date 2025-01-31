@@ -16,7 +16,7 @@
     "service_worker": "js/background.js"
   },
 
-  "permissions": ["storage", "clipboardWrite", "contextMenus", "nativeMessaging"],
+  "permissions": ["storage", "clipboardWrite", "contextMenus", "nativeMessaging","cookies","notifications"],
 
   "host_permissions": ["<all_urls>"]
 }

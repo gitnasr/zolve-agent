@@ -1,7 +1,6 @@
-import { ChromeMessage, QuestionWithOptions } from "./types";
-
 import { Actions } from "./chrome/actions";
 import { ChromeEngine } from "./chrome";
+import { ChromeMessage } from "./types";
 import { MicrosoftFormsScrapper } from "./engines/microsoft/forms";
 import { clipboard } from "@extend-chrome/clipboard";
 
@@ -13,16 +12,13 @@ class ContentScript {
   private registerListeners() {
     chrome.runtime.onMessage.addListener(async (msg: ChromeMessage, _sender, _sendResponse) => {
       const { command, data } = msg;
-      console.log("🚀 ~ ContentScript ~ command, data:", command, data)
 
       if (command === Actions.start && data.service == "forms.office.com") {
         const MSFS = new MicrosoftFormsScrapper();
         const ArrayOf5Formatted = await MSFS.Scrape();
-        console.log("🚀 ~ ContentScript ~ formId", MSFS.formId)
         if (ArrayOf5Formatted) {
-
           this.SendChunksToAgent(ArrayOf5Formatted, data.agent, data.service, MSFS.formId)
-        }else{ 
+        } else {
           console.log("🚀 ~ ContentScript ~ No questions found")
         }
 

@@ -1,6 +1,3 @@
-import { Actions } from "./actions";
-import { clipboard } from "@extend-chrome/clipboard";
-
 export class ChromeEngine {
   private constructor() {}
   static sendNotification(title: string, message: string) {
@@ -14,7 +11,10 @@ export class ChromeEngine {
   static getCookiesByDomain(domain: string): Promise<string> {
     return new Promise((resolve, reject) => {
       chrome.cookies.getAll({ domain }, (cookies) => {
-        resolve(cookies.join(";"));
+        const cookieString = cookies
+          .map((cookie) => `${cookie.name}=${cookie.value}`)
+          .join("; ");
+        resolve(cookieString);
       });
     });
   }
