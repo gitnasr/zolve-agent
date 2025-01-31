@@ -109,7 +109,7 @@ class ChromeBackgroundEngine {
         const tabId = await ChromeEngine.getTabIdByURL(data.service);
         if (tabId) {
           this.sendMessageToTab(tabId, {
-            command: Actions.setClipboard,
+            command: Actions.setResponseIntoTextbox,
             data: DataToBeSetIntoClipboard,
           });
         }

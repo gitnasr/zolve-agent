@@ -27,20 +27,9 @@ class ContentScript {
             console.log("🚀 ~ ContentScript ~ No questions found");
           }
         }
-        if (command === Actions.setClipboard) {
-          for (const line of data) {
-            await navigator.clipboard.write([
-              new ClipboardItem({
-                "text/plain": new Blob([line], { type: "text/plain" }),
-              }),
-            ]);
-            /**
-             * Sleep for 5 seconds to avoid spamming the clipboard
-             * on Windows, the clipboard behave differently, since it will override the previous value if the new value simultaneously written
-             * so we need to wait for a while before writing the next value
-             */
-            await ChromeEngine.Sleep(5000);
-          }
+        if (command === Actions.setResponseIntoTextbox) {
+          const textBox =  this.renderTextbox();
+          textBox.innerHTML += data;
         }
       }
     );
@@ -64,6 +53,24 @@ class ContentScript {
         },
       });
     }
+  }
+
+  private  renderTextbox() {
+    const textbox = document.querySelector(".es-output");
+    if (!textbox) {
+      // Create one
+      const textbox = document.createElement("textarea");
+      textbox.classList.add("es-output");
+      textbox.style.position = "fixed";
+      textbox.style.bottom = "0";
+      textbox.style.right = "0";
+      textbox.style.width = "50%";
+      document.body.appendChild(textbox);
+      return textbox;
+    }
+
+    return textbox;
+
   }
 }
 

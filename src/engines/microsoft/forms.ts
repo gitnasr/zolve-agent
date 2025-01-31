@@ -1,6 +1,6 @@
+import { ChromeEngine } from "../../chrome";
 import { Helper } from "../../utils";
 import { QuestionWithOptions } from "../../types";
-import { clipboard } from "@extend-chrome/clipboard";
 
 export class MicrosoftFormsScrapper {
   private readonly Selectors = {
@@ -119,7 +119,7 @@ export class MicrosoftFormsScrapper {
 
       return ArrayOfArrayOfQuestions;
     } else {
-      clipboard.writeText("I can't find the question list you're on your own.");
+      ChromeEngine.sendNotification("No questions found","You need to be on a form page to scrape questions");
     }
   }
 }
