@@ -1,16 +1,7 @@
-import { CloudflareResponse, Message } from "../types";
+import { CloudflareConfig, CloudflareResponse, Message } from "../types";
 
 import { Agent } from "./abstract";
-import { ChromeEngine } from "../chrome";
-import { config } from "../../env.prod.json";
 
-// load json file of config (Only for current progress, it will be replaced with chrome storage when implanting the option page)
-interface CloudflareConfig {
-  apiEndpoint: string;
-  accountId: string;
-  modelName: string;
-  apiKey: string;
-}
 export class Cloudflare extends Agent {
   protected host: string = "";
 

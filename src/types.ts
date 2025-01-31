@@ -50,3 +50,10 @@ export interface ClaudeConfig{
     serverURL:string;
     port:number;
 }
+
+export interface CloudflareConfig {
+  apiEndpoint: string;
+  accountId: string;
+  modelName: string;
+  apiKey: string;
+}
