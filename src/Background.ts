@@ -48,10 +48,8 @@ class ChromeBackgroundEngine {
         return;
       }
       if (info.menuItemId === "storage") {
-        console.log("clearing storage");
-        
         chrome.storage.sync.clear();
-        
+
         return;
       }
       if (tab && tab.id) {
@@ -70,31 +68,25 @@ class ChromeBackgroundEngine {
     chrome.runtime.onMessage.addListener(
       async (message: ChromeMessage, _sender, _response) => {
         const { command, data } = message;
-        
+
         let DataToBeSetIntoClipboard: string[] = [];
         if (command === Actions.claude) {
-          const Agent = await  ClaudeReversed.getInstance()
+          const Agent = await ClaudeReversed.getInstance();
 
-        
-          
-          
           DataToBeSetIntoClipboard = await Agent.Start(data.message);
-
         }
         if (command === Actions.dsr1) {
           const Agent = new Cloudflare();
           DataToBeSetIntoClipboard = await Agent.Start(data.message);
-          
         }
         const tabId = await ChromeEngine.getTabIdByURL(data.service);
-          if (tabId) {
-            this.sendMessageToTab(tabId, {
-              command: Actions.setClipboard,
-              data: DataToBeSetIntoClipboard,
-            });
-          }
-          console.log("🚀 ~ ChromeBackgroundEngine ~ DataToBeSetIntoClipboard", DataToBeSetIntoClipboard);
-          
+        if (tabId) {
+          this.sendMessageToTab(tabId, {
+            command: Actions.setClipboard,
+            data: DataToBeSetIntoClipboard,
+          });
+        }
+      
       }
     );
   }
