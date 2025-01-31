@@ -4,18 +4,25 @@
   "name": "Exam Solver Extension",
   "description": "A Browser Extension that uses AI to solve online exams",
   "version": "1.0",
-
+  "options_ui": {
+    "page": "options.html"
+  },
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
-      "js": [ "js/content_script.js"]
+      "js": ["js/vendor.js", "js/content_script.js"]
     }
   ],
 
   "background": {
     "service_worker": "js/background.js"
   },
-
+  "icons": {
+    "16": "icon.png",
+    "32": "icon.png",
+    "48": "icon.png",
+    "128": "icon.png"
+  },
   "permissions": ["storage", "clipboardWrite", "contextMenus", "nativeMessaging","cookies","notifications"],
 
   "host_permissions": ["<all_urls>"]

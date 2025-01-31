@@ -46,3 +46,7 @@ export interface ClaudeLocalStorage {
 export interface ClaudeServerResponse {
   response: string;
 }
+export interface ClaudeConfig{
+    serverURL:string;
+    port:number;
+}

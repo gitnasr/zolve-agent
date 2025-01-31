@@ -1,3 +1,4 @@
+import { ChromeEngine } from "../chrome";
 import { Message } from "../types";
 import { Prompt } from "./Prompt";
 
@@ -29,5 +30,9 @@ export abstract class Agent {
 
     const json = await Response.json();
     return json;
+  }
+  async getConfigByKey<T>(key: string): Promise<T | null> {
+    const config = await ChromeEngine.getLocalStorage<T>(key);
+    return config;
   }
 }

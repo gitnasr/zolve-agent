@@ -1,15 +1,20 @@
-import { ClaudeLocalStorage, ClaudeServerResponse, Message } from "../types";
+import {
+  ClaudeConfig,
+  ClaudeLocalStorage,
+  ClaudeServerResponse,
+  Message,
+} from "../types";
 
 import { Agent } from "./abstract";
 import { ChromeEngine } from "../chrome";
 import { SystemPrompt } from "./Prompt";
-import { config } from "../../env.prod.json";
 
 export class ClaudeReversed extends Agent {
   private static instance: ClaudeReversed;
-  protected readonly host: string = config.claude.host;
+  protected host: string = "";
   private readonly conversationIdKey: string =
     "ClaudeReversedConversationIdWithForm";
+  private readonly ClaudeConfigId: string = "ClaudeConfig";
   private formId: string;
   public conversationId: string | null = null;
 
@@ -27,8 +32,16 @@ export class ClaudeReversed extends Agent {
     super();
     this.formId = formId;
   }
-
+  private async prepareHost() {
+    const Config = await this.getConfigByKey<ClaudeConfig>(this.ClaudeConfigId);
+    if (!Config) {
+      throw new Error("Claude Config not found");
+    }
+    this.host = `${Config.serverURL}:${Config.port}`;
+  }
   public async Start(message: Message) {
+    await this.prepareHost();
+
     const json = await this.SendMessage<ClaudeServerResponse>(
       message,
       this.conversationId,
@@ -70,6 +83,7 @@ export class ClaudeReversed extends Agent {
   }
 
   private async PrepareConversation() {
+    await this.prepareHost();
     const conversationIdWithForm =
       await ChromeEngine.getLocalStorage<ClaudeLocalStorage>(
         this.conversationIdKey
@@ -92,7 +106,6 @@ export class ClaudeReversed extends Agent {
         );
       }
     } else {
-
       this.conversationId = await this.StartConversation();
       await ChromeEngine.setLocalStorage<ClaudeLocalStorage>(
         this.conversationIdKey,
