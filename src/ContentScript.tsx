@@ -59,7 +59,7 @@ class ContentScript {
   }
 
   private renderTextbox() {
-    const parent = document.querySelector(".es-output-parent");
+    const parent = document.querySelector<HTMLDivElement>(".es-output-parent");
     
     if (!parent) {
       
@@ -69,8 +69,17 @@ class ContentScript {
       parent.classList.add("es-output-parent");
       parent.appendChild(textbox);
       document.body.appendChild(parent);
+      parent.addEventListener("click", () => {
+        parent.style.display = "none";
+      });
+      document.addEventListener("keyup",(e) => {
+        if (e.ctrlKey && e.key === "Enter") {
+          parent.style.display = "block";
+        }
+      })  
       return textbox;
     }
+ 
     const textbox = parent.querySelector(".es-output-text-area")!;
 
     return textbox;

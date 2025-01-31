@@ -4,9 +4,9 @@
 
 @layer components {
     .es-output-parent {
-      @apply fixed bottom-0 right-0 w-1/4 opacity-10 hover:opacity-100;
+      @apply fixed bottom-0 right-0 w-1/4 opacity-0 hover:opacity-100 ;
     }
     .es-output-text-area {
-      @apply w-full h-64 p-2 bg-white border rounded;
+      @apply w-full h-64 p-2 bg-white border rounded outline-none;
     }
   }
