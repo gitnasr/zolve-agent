@@ -25,8 +25,13 @@ class ContentScript {
       }
       if (command === Actions.setClipboard) {
         for (const line of data) {
-          await clipboard.writeText(line);
-          await ChromeEngine.Sleep(2000);
+          await navigator.clipboard.write([new ClipboardItem({ "text/plain": new Blob([line], { type: "text/plain" }) })]);
+          /**
+           * Sleep for 5 seconds to avoid spamming the clipboard
+           * on Windows, the clipboard behave differently, since it will override the previous value if the new value simultaneously written
+           * so we need to wait for a while before writing the next value
+           */
+          await ChromeEngine.Sleep(5000);
         }
       }
 

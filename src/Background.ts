@@ -90,7 +90,7 @@ class ChromeBackgroundEngine {
             } else {
               retries++;
               console.log(`Retry ${retries}/${maxRetries}... waiting for conversationId`);
-              await this.delay(retryDelay);  
+              await ChromeEngine.Sleep(retryDelay);  
             }
           }
   
@@ -122,9 +122,6 @@ class ChromeBackgroundEngine {
     chrome.tabs.sendMessage(tabId, message);
   }
 
-  private delay(ms: number) {
-    return new Promise(resolve => setTimeout(resolve, ms));
-  }
 }
 
 new ChromeBackgroundEngine();
