@@ -7,7 +7,6 @@ import {
 
 import { Agent } from "./abstract";
 import { ChromeEngine } from "../chrome";
-import { SystemPrompt } from "./Prompt";
 
 export class ClaudeReversed extends Agent {
   private static instance: ClaudeReversed;
@@ -66,6 +65,7 @@ export class ClaudeReversed extends Agent {
     return SplittedOutput;
   }
   private async StartConversation(): Promise<string> {
+    const SystemPrompt = await this.getGlobalPrompt();
     const payload = {
       message: SystemPrompt,
     };

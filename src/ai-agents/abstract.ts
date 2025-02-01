@@ -3,6 +3,7 @@ import { Message } from "../types";
 import { Prompt } from "./Prompt";
 
 export abstract class Agent {
+  protected globalPrompt: string = "";
   protected abstract readonly host: string;
   protected abstract ConfigId: string;
   protected readonly headers = {
@@ -19,7 +20,7 @@ export abstract class Agent {
   ): Promise<T> {
     const payload = Prompt(
       Array.isArray(message) ? message : [message],
-      conversationId ? false : true
+      conversationId ? null : this.globalPrompt
     );
     const url = `${this.host}${endpoint ? endpoint : ""}`;
     const Response = await fetch(url, {
@@ -35,6 +36,13 @@ export abstract class Agent {
   async getConfigByKey<T>(key: string): Promise<T | null> {
     const config = await ChromeEngine.getLocalStorage<T>(key);
     return config;
+  }
+  async getGlobalPrompt(): Promise<void> {
+    const prompt = await ChromeEngine.getLocalStorage<string>("GlobalPrompt");
+    if (prompt) {
+      console.log("🚀 ~ Agent ~ getGlobalPrompt ~ prompt:", prompt);
+      this.globalPrompt = prompt;
+    }
   }
   protected abstract prepareHost(): Promise<void>;
 }
