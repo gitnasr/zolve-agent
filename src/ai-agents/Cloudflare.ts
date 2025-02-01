@@ -14,7 +14,12 @@ export class Cloudflare extends Agent {
   public async Start(message: Message): Promise<string[]> {
     await this.prepareHost();
     const CloudflareResponse = await this.SendMessage<CloudflareResponse>(
-      message
+      message,
+      null,
+      null,
+      {
+        max_tokens: 512,
+      }
     );
 
     const SplittedOutput = CloudflareResponse.result.response
