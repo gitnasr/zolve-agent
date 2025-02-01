@@ -71,7 +71,7 @@ class ChromeBackgroundEngine {
       async (message: ChromeMessage, _sender, _response) => {
         const { command, data } = message;
 
-        let DataToBeSetIntoClipboard: string[] = [];
+        let DataToBeSetIntoTextBox: string[] = [];
         if (command === Actions.claude) {
           const Agent = await ClaudeReversed.getInstance(data.formId);
           // Retry logic to ensure the conversationId is fetched properly before proceeding
@@ -100,17 +100,17 @@ class ChromeBackgroundEngine {
             console.log("Failed to get conversationId after retries");
             return;
           }
-          DataToBeSetIntoClipboard = await Agent.Start(data.message);
+          DataToBeSetIntoTextBox = await Agent.Start(data.message);
         }
         if (command === Actions.dsr1) {
           const Agent = new Cloudflare();
-          DataToBeSetIntoClipboard = await Agent.Start(data.message);
+          DataToBeSetIntoTextBox = await Agent.Start(data.message);
         }
         const tabId = await ChromeEngine.getTabIdByURL(data.service);
         if (tabId) {
           this.sendMessageToTab(tabId, {
             command: Actions.setResponseIntoTextbox,
-            data: DataToBeSetIntoClipboard,
+            data: DataToBeSetIntoTextBox,
           });
         }
       }

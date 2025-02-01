@@ -65,9 +65,9 @@ export class ClaudeReversed extends Agent {
     return SplittedOutput;
   }
   private async StartConversation(): Promise<string> {
-    const SystemPrompt = await this.getGlobalPrompt();
+    await this.getGlobalPrompt();
     const payload = {
-      message: SystemPrompt,
+      message: this.globalPrompt,
     };
     const Response = await fetch(`${this.host}/claude/new_chat`, {
       body: JSON.stringify(payload),
