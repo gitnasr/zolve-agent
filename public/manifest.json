@@ -3,7 +3,7 @@
 
   "name": "Zolve",
   "description": "A Browser Extension that uses AI to solve online exams",
-  "version": "1.0",
+  "version": "1.0.0",
   "options_ui": {
     "page": "options.html"
   },
