@@ -7,6 +7,7 @@
   "options_ui": {
     "page": "options.html"
   },
+
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
@@ -23,7 +24,15 @@
     "48": "icon.png",
     "128": "icon.png"
   },
-  "permissions": ["storage", "clipboardWrite", "contextMenus", "nativeMessaging","cookies","notifications"],
+  "permissions": [
+    "storage",
+    "clipboardWrite",
+    "contextMenus",
+    "nativeMessaging",
+    "cookies",
+    "notifications",
+    "system.display"
+  ],
 
   "host_permissions": ["<all_urls>"]
 }

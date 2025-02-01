@@ -28,6 +28,7 @@ export class Cloudflare extends Agent {
 
   protected async prepareHost(): Promise<void> {
     const Config = await this.getConfigByKey<CloudflareConfig>(this.ConfigId);
+    console.log("🚀 ~ Cloudflare ~ prepareHost ~ Config:", Config);
     if (!Config) {
       throw new Error("Cloudflare Config not found");
     }

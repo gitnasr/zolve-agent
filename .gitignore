@@ -136,3 +136,4 @@ dist
 .pnp.*
 
 env.prod.json
+temp.js

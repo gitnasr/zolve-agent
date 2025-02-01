@@ -1,14 +1,14 @@
 import "../public/index.css";
 
-import { Actions } from "./chrome/actions";
 import { ChromeEngine } from "./chrome";
-import { ChromeMessage } from "./types";
+import { Actions } from "./chrome/actions";
 import { MicrosoftFormsScrapper } from "./engines/microsoft/forms";
+import { ChromeMessage } from "./types";
 
 class ContentScript {
   constructor() {
     this.registerListeners();
-    const textBox =  this.renderTextbox();
+    this.renderTextbox();
   }
 
   private registerListeners() {
@@ -31,8 +31,8 @@ class ContentScript {
           }
         }
         if (command === Actions.setResponseIntoTextbox) {
-          const textBox =  this.renderTextbox();
-          textBox.innerHTML += "\n" +data;
+          const textBox = this.renderTextbox();
+          textBox.innerHTML += " \n " + data;
         }
       }
     );
@@ -60,9 +60,9 @@ class ContentScript {
 
   private renderTextbox() {
     const parent = document.querySelector<HTMLDivElement>(".es-output-parent");
-    
+
     if (!parent) {
-      
+
       const textbox = document.createElement("textarea");
       textbox.classList.add("es-output-text-area");
       const parent = document.createElement("div");
@@ -72,14 +72,14 @@ class ContentScript {
       parent.addEventListener("click", () => {
         parent.style.display = "none";
       });
-      document.addEventListener("keyup",(e) => {
+      document.addEventListener("keyup", (e) => {
         if (e.ctrlKey && e.key === "Enter") {
           parent.style.display = "block";
         }
-      })  
+      })
       return textbox;
     }
- 
+
     const textbox = parent.querySelector(".es-output-text-area")!;
 
     return textbox;
