@@ -90,7 +90,6 @@ export class ClaudeReversed extends Agent {
       );
 
     if (conversationIdWithForm) {
-      console.table(conversationIdWithForm);
       this.conversationId = conversationIdWithForm.conversationId;
 
       let formId = conversationIdWithForm.formId;

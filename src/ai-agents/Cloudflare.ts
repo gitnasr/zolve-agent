@@ -33,5 +33,6 @@ export class Cloudflare extends Agent {
     }
     this.host = `${Config.apiEndpoint}/client/v4/accounts/${Config.accountId}/ai/run/${Config.modelName}`;
     this.headers.Authorization = `Bearer ${Config.apiKey}`;
+    await this.getGlobalPrompt();
   }
 }
