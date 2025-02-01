@@ -1,6 +1,6 @@
 {
-  "name": "exam-solver-extension",
-  "version": "1.0.0",
+  "name": "zolve-extension",
+  "version": "0.0.1",
   "description": "Exam Solver Extension - Uses AI to solve online exams",
   "main": "index.js",
   "scripts": {
