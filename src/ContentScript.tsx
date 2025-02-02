@@ -1,9 +1,9 @@
 import "../public/index.css";
 
-import { ChromeEngine } from "./chrome";
 import { Actions } from "./chrome/actions";
-import { MicrosoftFormsScrapper } from "./engines/microsoft/forms";
+import { ChromeEngine } from "./chrome";
 import { ChromeMessage } from "./types";
+import { MicrosoftFormsScrapper } from "./engines/microsoft/forms";
 
 class ContentScript {
   constructor() {
@@ -69,7 +69,7 @@ class ContentScript {
       parent.classList.add("es-output-parent");
       parent.appendChild(textbox);
       document.body.appendChild(parent);
-      parent.addEventListener("click", () => {
+      parent.addEventListener("dblclick", () => {
         parent.style.display = "none";
       });
       document.addEventListener("keyup", (e) => {

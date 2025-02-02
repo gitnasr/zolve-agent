@@ -18,7 +18,7 @@ export class Cloudflare extends Agent {
       null,
       null,
       {
-        max_tokens: 512,
+        max_tokens: 1024,
       }
     );
 

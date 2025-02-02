@@ -39,7 +39,7 @@ export const Claude = () => {
         <div className="mb-16">
             <h1 className="text-xl font-semibold">Claude API Options</h1>
             <p className="text-sm text-gray-400">This options for claude server reversed API, Download it From <a href="https://github.com/gitnasr/Exam-Solver/releases/tag/claude" target="_blank" className="underline decoration-cyan-400 underline-offset-2">here.</a></p>
-            <div className="flex flex-row flex-wrap w-full gap-4 my-3">
+            <div className="flex flex-col flex-wrap w-full gap-4 my-3">
                 <div className="flex flex-col gap-2">
                     <label>Server URL</label>
                     <input
