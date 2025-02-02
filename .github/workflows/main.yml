@@ -1,9 +1,12 @@
 name: Merge pre-prod into master and Release
 
 on:
-  push:
-    branches:
-      - master
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Version number"
+        required: true
+        default: "1.0.0"
 
 jobs:
   release:
@@ -44,7 +47,7 @@ jobs:
         run: zip -r zolver-v$VERSION.zip zolver-v$VERSION
 
       - name: Upload the zip file
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: zolver-v$VERSION.zip
           path: zolver-v$VERSION.zip
