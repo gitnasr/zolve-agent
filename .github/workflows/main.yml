@@ -16,13 +16,6 @@ jobs:
       - name: Clone repo
         uses: actions/checkout@v4
 
-      - name: Ask for version number
-        id: version
-        run: |
-          echo "Please input the version number"
-          read VERSION
-          echo "version=${VERSION}" >> $GITHUB_ENV
-
       - name: Update package.json with new version
         run: |
           jq --arg VERSION "$VERSION" '.version = $VERSION' package.json > temp.json && mv temp.json package.json
