@@ -10,8 +10,9 @@
 
   "content_scripts": [
     {
-      "matches": ["<all_urls>"],
-      "js": ["js/vendor.js", "js/content_script.js"]
+      "matches": ["*://forms.office.com/*"],
+      "js": ["js/content_script.js"],
+      "css": ["css/content_script.css"]
     }
   ],
 

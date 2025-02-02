@@ -1,9 +1,9 @@
 import "../public/index.css";
 
-import { Actions } from "./chrome/actions";
 import { ChromeEngine } from "./chrome";
-import { ChromeMessage } from "./types";
+import { Actions } from "./chrome/actions";
 import { MicrosoftFormsScrapper } from "./engines/microsoft/forms";
+import { ChromeMessage } from "./types";
 
 class ContentScript {
   private currentService: string;
