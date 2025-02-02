@@ -17,6 +17,8 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Update package.json with new version
+        env:
+          VERSION: ${{ github.event.inputs.version }}
         run: |
           jq --arg VERSION "$VERSION" '.version = $VERSION' package.json > temp.json && mv temp.json package.json
 
@@ -34,26 +36,27 @@ jobs:
           fi
 
       - name: Rename dist folder
-        run: mv dist zolver-v$VERSION
+        run: mv dist zolver-v${{ github.event.inputs.version }}
 
       - name: Zip the dist folder
-        run: zip -r zolver-v$VERSION.zip zolver-v$VERSION
-
-      - name: Upload the zip file
-        uses: actions/upload-artifact@v4
-        with:
-          name: zolver-v$VERSION.zip
-          path: zolver-v$VERSION.zip
+        run: zip -r zolver-v${{ github.event.inputs.version }}.zip zolver-v${{ github.event.inputs.version }}
 
       - name: Create a pre-release tag
         run: |
-          git tag "extension-v$VERSION"
-          git push origin "extension-v$VERSION"
+          git tag "extension-v${{ github.event.inputs.version }}"
+          git push origin "extension-v${{ github.event.inputs.version }}"
 
       - name: Create a release
+        id: create_release
         uses: softprops/action-gh-release@v1
         with:
-          files: zolver-v$VERSION.zip
-          tag_name: "extension-v$VERSION"
-          name: "Release v$VERSION"
-          body: "Pre-release of extension v$VERSION"
+          tag_name: "extension-v${{ github.event.inputs.version }}"
+          name: "Release v${{ github.event.inputs.version }}"
+          body: "Pre-release of extension v${{ github.event.inputs.version }}"
+          draft: false
+          prerelease: true
+      - name: Upload zip to release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: zolver-v${{ github.event.inputs.version }}.zip
+          tag_name: "extension-v${{ github.event.inputs.version }}"

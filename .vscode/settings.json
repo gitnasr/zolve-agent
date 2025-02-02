@@ -1,5 +1,8 @@
 {
     "cSpell.words": [
         "MSFS"
+    ],
+    "github-actions.workflows.pinned.workflows": [
+        ".github/workflows/main.yml"
     ]
 }
