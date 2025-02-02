@@ -4,13 +4,6 @@ on:
   push:
     branches:
       - master
-    # Ensure it triggers only on a merge from pre-prod to master
-    # This checks for merge commits and ensures it came from pre-prod
-    # A merge commit will contain "Merge branch 'pre-prod'" in the commit message
-    # The `if` condition in a later step will ensure this
-    # The condition checks if the merge was into master and from pre-prod
-    # You can also use `pull_request` events, but this would depend on your workflow
-    # and whether you merge manually or via GitHub UI.
 
 jobs:
   release:
@@ -18,7 +11,7 @@ jobs:
 
     steps:
       - name: Clone repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Ask for version number
         id: version
