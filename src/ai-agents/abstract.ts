@@ -40,7 +40,6 @@ export abstract class Agent {
   async getGlobalPrompt(): Promise<void> {
     const prompt = await ChromeEngine.getLocalStorage<string>("GlobalPrompt");
     if (prompt) {
-      console.log("🚀 ~ Agent ~ getGlobalPrompt ~ prompt:", prompt);
       this.globalPrompt = prompt;
     }
   }

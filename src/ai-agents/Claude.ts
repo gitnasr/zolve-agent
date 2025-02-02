@@ -18,11 +18,11 @@ export class ClaudeReversed extends Agent {
   public conversationId: string | null = null;
 
   static async getInstance(formId: string) {
-    if (!this.instance) {
-      this.instance = new ClaudeReversed(formId);
+    if (!ClaudeReversed.instance) {
+      ClaudeReversed.instance = new ClaudeReversed(formId);
       const cookies = await ChromeEngine.getCookiesByDomain("claude.ai");
-      this.instance.headers.Cookies = cookies;
-      await this.instance.PrepareConversation();
+      ClaudeReversed.instance.headers.Cookies = cookies;
+      await ClaudeReversed.instance.PrepareConversation();
     }
 
     return this.instance;
@@ -50,7 +50,7 @@ export class ClaudeReversed extends Agent {
       }
     );
 
-    if (json.response == "Too many requests") {
+    if (json.response === "Too many requests") {
       ChromeEngine.sendNotification(
         "Failed",
         "Claude is limited, try again later"
