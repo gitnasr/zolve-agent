@@ -1,4 +1,4 @@
-name: Merge pre-prod into master and Release
+name: Release a new extension version
 
 on:
   workflow_dispatch:
@@ -60,3 +60,11 @@ jobs:
         with:
           files: zolver-v${{ github.event.inputs.version }}.zip
           tag_name: "extension-v${{ github.event.inputs.version }}"
+      - name: Commit package.json changes
+        run: |
+          git config --global user.name "github-actions"
+          git config --global user.email "github-actions@github.com"
+          git checkout main
+          git add package.json
+          git commit -m "AUTOMATED: update package.json version to ${{ github.event.inputs.version }}"
+          git push origin main
