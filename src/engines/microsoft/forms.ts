@@ -1,6 +1,6 @@
+import { ChromeEngine } from "../../chrome";
 import { Helper } from "../../utils";
 import { QuestionWithOptions } from "../../types";
-import { clipboard } from "@extend-chrome/clipboard";
 
 export class MicrosoftFormsScrapper {
   private readonly Selectors = {
@@ -12,9 +12,14 @@ export class MicrosoftFormsScrapper {
     RadioOption: "div[role='radiogroup']",
     CheckboxOption: "div[role='group']",
   };
-  constructor() {
-    console.log("MicrosoftFormsScrapper constructor");
+
+  private _formId: string = "";
+  public get formId(): string {
+    const url = new URL(window.location.href);
+    this._formId = url.search.split("?id=")[1];
+    return this._formId;
   }
+
   public async Scrape() {
     const QuestionWithOptions: QuestionWithOptions = [];
 
@@ -84,12 +89,14 @@ export class MicrosoftFormsScrapper {
         const q = QuestionWithOptions[index];
 
         const text_format = `
+                <question>
                 Question #${q.number} (${
           q.isMultipleChoice
             ? "Could have multiple answers"
             : "Only one answer valid"
         }): 
-                    ${q.question}
+                  
+                ${q.question}
                 
                 And the options that's available are:
     
@@ -97,11 +104,14 @@ export class MicrosoftFormsScrapper {
                   return ` Option: ${i + 1} : ${option} \n`;
                 })} 
                 
-                --------------------------------
+                </question>
                 `;
         ArrayFormattedQuestions.push(text_format);
       }
-
+      /**
+       * Split the array into chunks of 5, this is to avoid sending too much data to AI Agent to avoid token limit
+       * So we split the array into chunks of 5 questions
+       */
       const ArrayOfArrayOfQuestions = Helper.SplitArrayIntoChucks(
         ArrayFormattedQuestions,
         5
@@ -109,7 +119,7 @@ export class MicrosoftFormsScrapper {
 
       return ArrayOfArrayOfQuestions;
     } else {
-      clipboard.writeText("I can't find the question list you're on your own.");
+      ChromeEngine.sendNotification("No questions found","You need to be on a form page to scrape questions");
     }
   }
 }
