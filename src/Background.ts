@@ -1,8 +1,8 @@
-import { Actions } from "./chrome/actions";
-import { ChromeEngine } from "./chrome";
-import { ChromeMessage } from "./types";
 import { ClaudeReversed } from "./ai-agents/Claude";
 import { Cloudflare } from "./ai-agents/Cloudflare";
+import { ChromeEngine } from "./chrome";
+import { Actions } from "./chrome/actions";
+import { ChromeMessage } from "./types";
 
 class ChromeBackgroundEngine {
   constructor() {
@@ -22,7 +22,6 @@ class ChromeBackgroundEngine {
       contexts: ["all"],
       id: "dsr1",
     });
-
     chrome.contextMenus.create({
       title: "debug",
       contexts: ["all"],
