@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 
-import { CloudflareConfig } from "../types";
 import toast from "react-hot-toast";
+import { CloudflareConfig } from "../types";
 
 export const Cloudflare = () => {
 
@@ -59,7 +59,7 @@ export const Cloudflare = () => {
         <>
             <h1 className="text-xl font-semibold">Cloudflare Workers</h1>
             <p className="text-sm text-gray-400">
-                This options for Cloudflare AI Workers, Know More From
+                This options for Cloudflare AI Workers, Know More From{" "}
                 <a
                     href="https://github.com/gitnasr/zolve/Readme.md"
                     target="_blank"

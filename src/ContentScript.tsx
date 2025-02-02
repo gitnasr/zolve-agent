@@ -6,9 +6,11 @@ import { ChromeMessage } from "./types";
 import { MicrosoftFormsScrapper } from "./engines/microsoft/forms";
 
 class ContentScript {
+  private currentService: string;
   constructor() {
     this.registerListeners();
-    this.renderTextbox();
+    this.currentService = "";
+
   }
 
   private registerListeners() {
@@ -17,6 +19,7 @@ class ContentScript {
         const { command, data } = msg;
 
         if (command === Actions.start && data.service == "forms.office.com") {
+          this.currentService = data.service;
           const MSFS = new MicrosoftFormsScrapper();
           const ArrayOf5Formatted = await MSFS.Scrape();
           if (ArrayOf5Formatted) {
@@ -30,7 +33,7 @@ class ContentScript {
             ChromeEngine.sendNotification("Error While Scraping", "No Data Sent back from the scraper");
           }
         }
-        if (command === Actions.setResponseIntoTextbox) {
+        if (command === Actions.setResponseIntoTextbox && window.location.href.includes(this.currentService)) {
           const textBox = this.renderTextbox();
           textBox.innerHTML += " \n " + data;
         }

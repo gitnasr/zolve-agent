@@ -38,7 +38,7 @@ export const Claude = () => {
     return (
         <div className="mb-16">
             <h1 className="text-xl font-semibold">Claude API Options</h1>
-            <p className="text-sm text-gray-400">This options for claude server reversed API, Download it From <a href="https://github.com/gitnasr/Exam-Solver/releases/tag/claude" target="_blank" className="underline decoration-cyan-400 underline-offset-2">here.</a></p>
+            <p className="text-sm text-gray-400">This options for claude server reversed API, Download it From <a href="https://github.com/gitnasr/zolve/releases/latest" target="_blank" className="underline decoration-cyan-400 underline-offset-2">here.</a></p>
             <div className="flex flex-col flex-wrap w-full gap-4 my-3">
                 <div className="flex flex-col gap-2">
                     <label>Server URL</label>
@@ -58,8 +58,7 @@ export const Claude = () => {
                 <button disabled={isLoading} onClick={handleSave} className="w-full p-2 text-white bg-green-700 hover:bg-green-800 rounded-xl disabled:bg-green-900 disabled:cursor-not-allowed">Save</button>
 
             </div>
-            <small
-            >These default values are the values that are compatible with our Python server. <br /> DO NOT CHANGE them unless you know what you're doing</small>
+            <small>These default values are the values that are compatible with our Python server. <br /> DO NOT CHANGE them unless you know what you're doing</small>
 
         </div>
     )
