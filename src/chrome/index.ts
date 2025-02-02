@@ -1,9 +1,5 @@
-import { Actions } from "./actions";
-import { clipboard } from "@extend-chrome/clipboard";
-
 export class ChromeEngine {
-  private constructor() {
-  }
+  private constructor() {}
   static sendNotification(title: string, message: string) {
     chrome.notifications.create({
       type: "basic",
@@ -15,11 +11,14 @@ export class ChromeEngine {
   static getCookiesByDomain(domain: string): Promise<string> {
     return new Promise((resolve, reject) => {
       chrome.cookies.getAll({ domain }, (cookies) => {
-        resolve(cookies.join(";"));
+        const cookieString = cookies
+          .map((cookie) => `${cookie.name}=${cookie.value}`)
+          .join("; ");
+        resolve(cookieString);
       });
     });
   }
-  static getLocalStorage(key: string): Promise<string | null> {
+  static getLocalStorage<T>(key: string): Promise<T | null> {
     return new Promise((resolve, reject) => {
       chrome.storage.sync.get(key, (result) => {
         if (result[key]) resolve(result[key]);
@@ -27,7 +26,7 @@ export class ChromeEngine {
       });
     });
   }
-  static setLocalStorage(key: string, value: string): Promise<void> {
+  static setLocalStorage<T>(key: string, value: T): Promise<void> {
     return new Promise((resolve, reject) => {
       chrome.storage.sync.set({ [key]: value }, () => {
         resolve();

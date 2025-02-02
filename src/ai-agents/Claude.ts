@@ -1,30 +1,47 @@
+import {
+  ClaudeConfig,
+  ClaudeLocalStorage,
+  ClaudeServerResponse,
+  Message,
+} from "../types";
+
 import { Agent } from "./abstract";
 import { ChromeEngine } from "../chrome";
-import { Message } from "../types";
-import { SystemPrompt } from "./Prompt";
-import { config } from "../../env.prod.json";
 
 export class ClaudeReversed extends Agent {
   private static instance: ClaudeReversed;
-  protected readonly host: string = config.claude.host;
-  private readonly conversationIdKey: string = "ClaudeReversedConversationId";
+  protected host: string = "";
+  private readonly conversationIdKey: string =
+    "ClaudeReversedConversationIdWithForm";
+  protected readonly ConfigId: string = "ClaudeConfig";
+  private formId: string;
   public conversationId: string | null = null;
 
-  static async getInstance() {
-    if (this.instance) {
-      return this.instance;
+  static async getInstance(formId: string) {
+    if (!ClaudeReversed.instance) {
+      ClaudeReversed.instance = new ClaudeReversed(formId);
+      const cookies = await ChromeEngine.getCookiesByDomain("claude.ai");
+      ClaudeReversed.instance.headers.Cookies = cookies;
+      await ClaudeReversed.instance.PrepareConversation();
     }
 
-    this.instance = new ClaudeReversed();
-    await this.instance.PrepareConversation();
     return this.instance;
   }
-  private constructor() {
+  private constructor(formId: string) {
     super();
+    this.formId = formId;
   }
-
+  protected async prepareHost() {
+    const Config = await this.getConfigByKey<ClaudeConfig>(this.ConfigId);
+    if (!Config) {
+      throw new Error("Claude Config not found");
+    }
+    this.host = `${Config.serverURL}:${Config.port}`;
+  }
   public async Start(message: Message) {
-    const response = await this.SendMessage<string>(
+    await this.prepareHost();
+
+    const json = await this.SendMessage<ClaudeServerResponse>(
       message,
       this.conversationId,
       "/claude",
@@ -32,14 +49,15 @@ export class ClaudeReversed extends Agent {
         conversationId: this.conversationId,
       }
     );
-    if (response === "Too many requests") {
+
+    if (json.response === "Too many requests") {
       ChromeEngine.sendNotification(
         "Failed",
         "Claude is limited, try again later"
       );
       return [];
     }
-    const SplittedOutput = response
+    const SplittedOutput = json.response
       .split("\n")
       .filter(Boolean)
       .map((str) => str.trim());
@@ -47,8 +65,9 @@ export class ClaudeReversed extends Agent {
     return SplittedOutput;
   }
   private async StartConversation(): Promise<string> {
+    await this.getGlobalPrompt();
     const payload = {
-      message: SystemPrompt,
+      message: this.globalPrompt,
     };
     const Response = await fetch(`${this.host}/claude/new_chat`, {
       body: JSON.stringify(payload),
@@ -64,19 +83,40 @@ export class ClaudeReversed extends Agent {
   }
 
   private async PrepareConversation() {
-    console.log("PrepareConversation");
+    await this.prepareHost();
+    const conversationIdWithForm =
+      await ChromeEngine.getLocalStorage<ClaudeLocalStorage>(
+        this.conversationIdKey
+      );
 
-    let conversationId = await ChromeEngine.getLocalStorage(
-      this.conversationIdKey
-    );
-    if (conversationId) {
-      this.conversationId = conversationId;
+    if (conversationIdWithForm) {
+      this.conversationId = conversationIdWithForm.conversationId;
+
+      let formId = conversationIdWithForm.formId;
+
+      if (formId !== this.formId) {
+        this.conversationId = await this.StartConversation();
+        await ChromeEngine.setLocalStorage<ClaudeLocalStorage>(
+          this.conversationIdKey,
+          {
+            conversationId: this.conversationId,
+            formId: this.formId,
+          }
+        );
+      }
     } else {
       this.conversationId = await this.StartConversation();
-      await ChromeEngine.setLocalStorage(
+      await ChromeEngine.setLocalStorage<ClaudeLocalStorage>(
         this.conversationIdKey,
-        this.conversationId
+        {
+          conversationId: this.conversationId,
+          formId: this.formId,
+        }
       );
+    }
+
+    if (!this.conversationId) {
+      throw new Error("Failed to initialize conversation ID");
     }
   }
 }
