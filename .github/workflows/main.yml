@@ -15,57 +15,56 @@ on:
 jobs:
   release:
     runs-on: ubuntu-latest
-    if: contains(github.event.head_commit.message, 'Merge branch \'pre-prod\'') # Ensure it's a merge from pre-prod to master
 
     steps:
-    - name: Clone repo
-      uses: actions/checkout@v3
+      - name: Clone repo
+        uses: actions/checkout@v3
 
-    - name: Ask for version number
-      id: version
-      run: |
-        echo "Please input the version number"
-        read VERSION
-        echo "version=${VERSION}" >> $GITHUB_ENV
+      - name: Ask for version number
+        id: version
+        run: |
+          echo "Please input the version number"
+          read VERSION
+          echo "version=${VERSION}" >> $GITHUB_ENV
 
-    - name: Update package.json with new version
-      run: |
-        jq --arg VERSION "$VERSION" '.version = $VERSION' package.json > temp.json && mv temp.json package.json
+      - name: Update package.json with new version
+        run: |
+          jq --arg VERSION "$VERSION" '.version = $VERSION' package.json > temp.json && mv temp.json package.json
 
-    - name: Install dependencies
-      run: npm install
+      - name: Install dependencies
+        run: npm install
 
-    - name: Build the project
-      run: npm run build
+      - name: Build the project
+        run: npm run build
 
-    - name: Check for build errors
-      run: |
-        if [ ! -d "dist" ]; then
-          echo "Build failed: dist folder does not exist"
-          exit 1
-        fi
+      - name: Check for build errors
+        run: |
+          if [ ! -d "dist" ]; then
+            echo "Build failed: dist folder does not exist"
+            exit 1
+          fi
 
-    - name: Rename dist folder
-      run: mv dist zolver-v$VERSION
+      - name: Rename dist folder
+        run: mv dist zolver-v$VERSION
 
-    - name: Zip the dist folder
-      run: zip -r zolver-v$VERSION.zip zolver-v$VERSION
+      - name: Zip the dist folder
+        run: zip -r zolver-v$VERSION.zip zolver-v$VERSION
 
-    - name: Upload the zip file
-      uses: actions/upload-artifact@v3
-      with:
-        name: zolver-v$VERSION.zip
-        path: zolver-v$VERSION.zip
+      - name: Upload the zip file
+        uses: actions/upload-artifact@v3
+        with:
+          name: zolver-v$VERSION.zip
+          path: zolver-v$VERSION.zip
 
-    - name: Create a pre-release tag
-      run: |
-        git tag "extension-v$VERSION"
-        git push origin "extension-v$VERSION"
-        
-    - name: Create a release
-      uses: softprops/action-gh-release@v1
-      with:
-        files: zolver-v$VERSION.zip
-        tag_name: "extension-v$VERSION"
-        release_name: "Release v$VERSION"
-        body: "Pre-release of extension v$VERSION"
+      - name: Create a pre-release tag
+        run: |
+          git tag "extension-v$VERSION"
+          git push origin "extension-v$VERSION"
+
+      - name: Create a release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: zolver-v$VERSION.zip
+          tag_name: "extension-v$VERSION"
+          name: "Release v$VERSION"
+          body: "Pre-release of extension v$VERSION"
