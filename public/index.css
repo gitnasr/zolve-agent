@@ -15,7 +15,7 @@ input[type='number'] {
 
 @layer components {
   .es-output-parent {
-    @apply fixed bottom-0 right-0 w-1/4 hover:opacity-100;
+    @apply fixed bottom-0 right-0 w-1/4 opacity-0 hover:opacity-100;
   }
 
   .es-output-text-area {

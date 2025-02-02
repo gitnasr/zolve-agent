@@ -1,15 +1,14 @@
 import "../public/index.css";
 
-import { ChromeEngine } from "./chrome";
 import { Actions } from "./chrome/actions";
-import { MicrosoftFormsScrapper } from "./engines/microsoft/forms";
+import { ChromeEngine } from "./chrome";
 import { ChromeMessage } from "./types";
+import { MicrosoftFormsScrapper } from "./engines/microsoft/forms";
 
 class ContentScript {
   private currentService: string;
   constructor() {
     this.registerListeners();
-    this.renderTextbox();
     this.currentService = "";
 
   }
