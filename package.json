@@ -7,8 +7,7 @@
     "watch": "webpack --config webpack/dev.js --watch",
     "build": "webpack --config webpack/prod.js",
     "clean": "rimraf dist",
-    "style": "prettier --write \"src/**/*.{ts,tsx}\"",
-    "watch:tailwind": "tailwindcss -i public/index.css -o dist/content.css --watch"
+    "style": "prettier --write \"src/**/*.{ts,tsx}\""
   },
   "author": "gitnasr",
   "license": "MIT",
@@ -17,7 +16,6 @@
     "react-dom": "^18.2.0"
   },
   "devDependencies": {
-    "@tailwindcss/postcss": "^4.0.2",
     "@types/chrome": "0.0.158",
     "@types/react": "^18.0.29",
     "@types/react-dom": "^18.0.11",
