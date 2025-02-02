@@ -9,6 +9,7 @@ class ContentScript {
   private currentService: string;
   constructor() {
     this.registerListeners();
+    this.renderTextbox();
     this.currentService = "";
 
   }
@@ -80,6 +81,15 @@ class ContentScript {
           parent.style.display = "block";
         }
       })
+
+      const clearButton = document.createElement("button");
+      clearButton.innerHTML = "Clear";
+      clearButton.classList.add("es-clear-button");
+      clearButton.addEventListener("click", () => {
+        textbox.value = "";
+      });
+      parent.appendChild(clearButton);
+
       return textbox;
     }
 
