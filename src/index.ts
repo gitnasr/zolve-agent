@@ -1,9 +1,14 @@
+import cors from "@fastify/cors";
 import fastifyEnv from "@fastify/env";
 import fastify from "fastify";
 import routes from "./router";
 
 const server = fastify({
   logger: true,
+});
+server.register(cors, {
+  allowedHeaders: ["Content-Type", "Authorization"],
+  origin: "*",
 });
 server.register(routes);
 server.register(fastifyEnv, {

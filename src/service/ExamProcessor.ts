@@ -14,7 +14,7 @@ OPTIONS YOU HAVE WILL BE HERE
 You need to return the result on this formula 
 Question Number ⇒ Answer 
 You not share with me any steps, anything except the the requested formula`;
-const SendToAgent = async (Questions: string) => {
+export const SendToAgent = async (Questions: string) => {
   const response = await fetch(
     "https://openrouter.ai/api/v1/chat/completions",
     {
@@ -48,4 +48,5 @@ const SendToAgent = async (Questions: string) => {
       }),
     }
   );
+  return response.json();
 };
