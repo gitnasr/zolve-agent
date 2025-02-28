@@ -27,11 +27,15 @@ server.register(fastifyEnv, {
   },
   dotenv: true,
 });
+const host = "RENDER" in process.env ? `0.0.0.0` : `localhost`;
 
-server.listen({ port: Number(process.env.PORT) || 3000 }, (err, address) => {
-  if (err) {
-    console.error(err);
-    process.exit(1);
+server.listen(
+  { port: Number(process.env.PORT) || 3000, host },
+  (err, address) => {
+    if (err) {
+      console.error(err);
+      process.exit(1);
+    }
+    console.log(`Server listening at ${address}`);
   }
-  console.log(`Server listening at ${address}`);
-});
+);
