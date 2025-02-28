@@ -27,7 +27,7 @@ server.register(fastifyEnv, {
   },
   dotenv: true,
 });
-const host = "RENDER" in process.env ? `0.0.0.0` : `localhost`;
+const host = "0.0.0.0";
 
 server.listen(
   { port: Number(process.env.PORT) || 3000, host },

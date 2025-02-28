@@ -1,0 +1,8 @@
+{
+    "appService.zipIgnorePattern": [
+        "node_modules{,/**}",
+        ".vscode{,/**}"
+    ],
+    "appService.defaultWebAppToDeploy": "/subscriptions/6082b8a6-3277-4352-b4d9-0642459627f7/resourceGroups/gitnasr/providers/Microsoft.Web/sites/zolve",
+    "appService.deploySubpath": "."
+}
