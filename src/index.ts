@@ -28,7 +28,7 @@ server.register(fastifyEnv, {
   dotenv: true,
 });
 
-server.listen({ port: 3000 }, (err, address) => {
+server.listen({ port: Number(process.env.PORT) || 3000 }, (err, address) => {
   if (err) {
     console.error(err);
     process.exit(1);
