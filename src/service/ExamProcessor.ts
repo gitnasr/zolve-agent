@@ -1,4 +1,4 @@
-const SYSTEM = `You role is a Student that currently having an exam
+export const SystemPrompt = `You role is a Student that currently having an exam
 Your tasks are:
 Read the question carefully
 The Question will be between <question></question> tags at this formula. 
@@ -31,7 +31,7 @@ export const SendToAgent = async (Questions: string) => {
             content: [
               {
                 type: "text",
-                text: SYSTEM,
+                text: SystemPrompt,
               },
             ],
           },

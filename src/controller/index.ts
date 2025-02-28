@@ -1,6 +1,5 @@
 import { FastifyReply, FastifyRequest } from "fastify";
-
-import { SendToAgent } from "../service/ExamProcessor";
+import { SendToAgent, SystemPrompt } from "../service/ExamProcessor";
 
 export const ProcessExam = async (
   request: FastifyRequest,
@@ -20,4 +19,8 @@ export const ProcessExam = async (
   const response = res.choices[0].message.content;
 
   reply.send({ response });
+};
+
+export const AppConfig = (request: FastifyRequest, reply: FastifyReply) => {
+  reply.send({ globalPrompt: SystemPrompt });
 };
