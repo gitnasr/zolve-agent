@@ -13,6 +13,19 @@ A lightweight Node.js server that processes exam questions using AI capabilities
 - Deployed to Azure Web App
 - CI/CD with GitHub Actions
 
+  
+## 💡 How It Works
+
+The Zolve AI Agent acts as a middleware between client applications and AI models. When a question is submitted, the server:
+
+1. Receives the question through the `/process` endpoint
+2. Formats the question with system prompts
+3. Sends the formatted request to OpenRouter API
+4. Processes the AI model's response
+5. Returns a clean, formatted answer
+
+The agent is specifically designed to interpret exam questions and return concise answers in the format "Question Number ⇒ Answer" without showing the reasoning process.
+
 ## 🚀 Installation
 
 ### Prerequisites
@@ -142,15 +155,6 @@ Defines API routes for the application.
 - `npm run dev`: Run the application with nodemon for development
 - `npm run lint`: Lint the codebase
 
-## 🔄 CI/CD Pipeline
-
-The project uses GitHub Actions to automatically build and deploy to Azure Web App when changes are pushed to the `zolve-agent` branch. The workflow:
-
-1. Sets up Node.js v22.x
-2. Installs dependencies
-3. Builds the application
-4. Zips the artifacts
-5. Deploys to Azure Web App
 
 ## 🤝 Contributing
 
@@ -162,14 +166,3 @@ Contributions are welcome! To contribute:
 4. Push to the branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
 
-## 💡 How It Works
-
-The Zolve AI Agent acts as a middleware between client applications and AI models. When a question is submitted, the server:
-
-1. Receives the question through the `/process` endpoint
-2. Formats the question with system prompts
-3. Sends the formatted request to OpenRouter API
-4. Processes the AI model's response
-5. Returns a clean, formatted answer
-
-The agent is specifically designed to interpret exam questions and return concise answers in the format "Question Number ⇒ Answer" without showing the reasoning process.
