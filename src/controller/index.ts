@@ -14,7 +14,6 @@ export const ProcessExam = async (
   };
 
   const res = await SendToAgent(messages[0]?.content);
-  console.log(res);
 
   const response = res.choices[0].message.content;
 
